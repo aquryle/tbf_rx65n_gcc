@@ -24,12 +24,19 @@ int main(void)
 	led_ctrl(LED0, LED_ON);
 	led_ctrl(LED1, LED_OFF);
 
-	cmt_wait(0, MILLI_SEC, 3000);
+
 
 	while(1) {
 		led_toggle(LED0);
 		led_toggle(LED1);
-		cmt_wait(0, MILLI_SEC, 500);
+		// cmt_wait(0, MILLI_SEC, 500);
+		// led_toggle(LED0);
+		// led_toggle(LED1);
+		// cmt_wait(1, MILLI_SEC, 500);
+		cmtw1_ir = 0;
+		cmtw1_start(1, 500);
+		while (cmtw1_ir != 1);
+
 	}
 
 	return 0;

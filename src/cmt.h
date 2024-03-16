@@ -10,10 +10,18 @@
 
 
 #include "common.h"
+#include "interrupt_handlers.h"
+
+//! CMTW0の割り込み発生フラグ
+extern volatile uint8_t cmtw0_ir;
+//! CMTW1の割り込み発生フラグ
+extern volatile uint8_t cmtw1_ir;
 
 
 extern void cmt_create(void);
 extern void cmt_wait(uint8_t cmt_num, CMT_UNIT unit, uint32_t t);
+extern void cmtw0_start(CMT_UNIT unit, uint32_t time);
+extern void cmtw1_start(CMT_UNIT unit, uint32_t time);
 
 
 
