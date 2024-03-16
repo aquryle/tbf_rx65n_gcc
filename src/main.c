@@ -21,13 +21,14 @@ int main(void)
 	gpio_create();
 	cmt_create();
 
+	led_ctrl(LED0, LED_ON);
+	led_ctrl(LED1, LED_OFF);
 
-	PORTD.PODR.BIT.B6 = 0;
+	cmt_wait(0, MILLI_SEC, 3000);
 
 	while(1) {
-		PORTD.PODR.BIT.B7 = 0;
-		cmt_wait(0, MILLI_SEC, 500);
-		PORTD.PODR.BIT.B7 = 1;
+		led_toggle(LED0);
+		led_toggle(LED1);
 		cmt_wait(0, MILLI_SEC, 500);
 	}
 
