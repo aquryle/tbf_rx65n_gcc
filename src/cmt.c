@@ -8,11 +8,10 @@
 #include "cmt.h"
 
 
-volatile uint8_t cmtw0_ir;
-volatile uint8_t cmtw1_ir;
-
-volatile uint32_t watch32;
-
+static uint8_t *cmtw0_status;
+static uint8_t *cmtw1_status;
+static void cmtw0_stop(void);
+static void cmtw1_stop(void);
 
 
 /**
@@ -38,15 +37,13 @@ void cmt_create(void)
 	// コントロールレジスタ
 	CMT0.CMCR.WORD = 0x0080;	// PCLK/8、CMI禁止
 	CMT1.CMCR.WORD = 0x0080;	// PCLK/8、CMI禁止
-	CMTW0.CMWCR.WORD = 0x0008;	// PCLK/8、CMWI許可
-	CMTW1.CMWCR.WORD = 0x000B;	// PCLK/512、CMWI許可
 
-	CMTW0.CMWIOR.BIT.CMWE = 1;	// コンペアマッチ動作許可
 	CMTW1.CMWIOR.BIT.CMWE = 1;	// コンペアマッチ動作許可
-
+	CMTW0.CMWIOR.BIT.CMWE = 1;	// コンペアマッチ動作許可
 
 	// IPR
 	IPR(CMTW1, CMWI1) = _IPR_LEVEL10;
+	IPR(CMTW0, CMWI0) = _IPR_LEVEL10;
 
 
 }
@@ -98,40 +95,121 @@ void cmt_wait(uint8_t cmt_num, CMT_UNIT unit, uint32_t t)
 }
 
 
-void cmtw0_start(CMT_UNIT unit, uint32_t time)
+
+/**
+ * @brief CMTW0の動作を開始する
+ *
+ * @param unit timeの単位
+ * @param time コンペアマッチまでの時間
+ * @param status コンペアマッチしたかフラグ
+ *
+ * @details	このタイマーは主にタイムアウト監視に使う。
+ * 			引数で時間を指定し、コンペアマッチしたら
+ * 			ポインタ変数のstatusが1になる。
+ */
+void cmtw0_start(CMT_UNIT unit, uint16_t time, uint8_t *status)
 {
-	CMTW0.CMWCOR = 3 * time;	// us単位
-	CMTW0.CMWSTR.BIT.STR = 1;
+	// 周期設定
+	cmtw0_stop();
+	switch (unit)
+	{
+	case MILLI_SEC:
+		CMTW0.CMWCR.WORD = 0x000B;	// PCLK/512、CMWI許可
+		CMTW0.CMWCOR = 57ul * time;	// コンペアマッチ値設定
+		break;
+	case MICRO_SEC:
+		CMTW0.CMWCR.WORD = 0x0008;	// PCLK/8、CMWI許可
+		CMTW0.CMWCOR = 3ul * time;	// コンペアマッチ値設定
+		break;
+	case CYCLE:
+		// 気が向いたらやる
+		break;
+	}
+
+	// 割り込みステータス用ポインタをコピー
+	*status = 0;
+	cmtw0_status = status;
+
+	// タイマー開始
+	CMTW0.CMWCNT = 0ul;			// カウンタリセット
+	IEN(CMTW0, CMWI0) = 1;		// コンペアマッチ割り込み許可
+	CMTW0.CMWSTR.BIT.STR = 1;	// タイマー開始
 }
 
-void cmtw1_start(CMT_UNIT unit, uint32_t time)
+/**
+ * @brief CMT0を停止する
+ *
+ */
+void cmtw0_stop(void)
 {
-	CMTW1.CMWCOR = 57 * time;	// ms単位
-	CMTW1.CMWCNT = 0x00000000ul;
-	// IR(CMTW1, CMWI1) = 0;
-	IEN(CMTW1, CMWI1) = 1;
-	CMTW1.CMWSTR.BIT.STR = 1;
+	CMTW0.CMWSTR.BIT.STR = 0;	// タイマー停止
+	IEN(CMTW0, CMWI0) = 0;		// コンペアマッチ割り込み禁止
 }
 
+
+/**
+ * @brief CMTW1の動作を開始する
+ *
+ * @param unit timeの単位
+ * @param time コンペアマッチまでの時間
+ * @param status コンペアマッチしたかフラグ
+ *
+ * @details	このタイマーは主にタイムアウト監視に使う。
+ * 			引数で時間を指定し、コンペアマッチしたら
+ * 			ポインタ変数のstatusが1になる。
+ */
+void cmtw1_start(CMT_UNIT unit, uint16_t time, uint8_t *status)
+{
+	// 周期設定
+	cmtw1_stop();
+	switch (unit)
+	{
+	case MILLI_SEC:
+		CMTW1.CMWCR.WORD = 0x000B;	// PCLK/512、CMWI許可
+		CMTW1.CMWCOR = 57ul * time;	// コンペアマッチ値設定
+		break;
+	case MICRO_SEC:
+		CMTW1.CMWCR.WORD = 0x0008;	// PCLK/8、CMWI許可
+		CMTW1.CMWCOR = 3ul * time;	// コンペアマッチ値設定
+		break;
+	case CYCLE:
+		// 気が向いたらやる
+		break;
+	}
+
+	// 割り込みステータス用ポインタをコピー
+	*status = 0;
+	cmtw1_status = status;
+
+	// タイマー開始
+	CMTW1.CMWCNT = 0ul;			// カウンタリセット
+	IEN(CMTW1, CMWI1) = 1;		// コンペアマッチ割り込み許可
+	CMTW1.CMWSTR.BIT.STR = 1;	// タイマー開始
+}
+
+/**
+ * @brief CMTW1を停止する
+ *
+ */
 void cmtw1_stop(void)
 {
-	// CMTW1.CMWCNT = 0;
-	// IR(CMTW1, CMWI1) = 0;
-	CMTW1.CMWSTR.BIT.STR = 0;
-	IEN(CMTW1, CMWI1) = 0;
+	CMTW1.CMWSTR.BIT.STR = 0;	// タイマー停止
+	IEN(CMTW1, CMWI1) = 0;		// コンペアマッチ割り込み禁止
 }
+
 
 
 // CMTW0 CMWI0
 void INT_Excep_CMTW0_CMWI0(void)
 {
-	cmtw0_ir = 1;
+	*cmtw0_status = 1;
+	cmtw0_stop();
 }
 
 // CMTW1 CMWI1
 void INT_Excep_CMTW1_CMWI1(void)
 {
-	cmtw1_ir = 1;
+	*cmtw1_status = 1;
 	cmtw1_stop();
 }
 

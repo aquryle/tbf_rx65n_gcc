@@ -18,6 +18,8 @@
 
 int main(void)
 {
+	uint8_t timer_status;
+
 	gpio_create();
 	cmt_create();
 
@@ -25,18 +27,23 @@ int main(void)
 	led_ctrl(LED1, LED_OFF);
 
 
-
 	while(1) {
 		led_toggle(LED0);
 		led_toggle(LED1);
-		// cmt_wait(0, MILLI_SEC, 500);
-		// led_toggle(LED0);
-		// led_toggle(LED1);
-		// cmt_wait(1, MILLI_SEC, 500);
-		cmtw1_ir = 0;
-		cmtw1_start(1, 500);
-		while (cmtw1_ir != 1);
-
+		cmtw0_start(MILLI_SEC, 500, &timer_status);
+		while (!timer_status);
+		led_toggle(LED0);
+		led_toggle(LED1);
+		cmtw1_start(MILLI_SEC, 500, &timer_status);
+		while (!timer_status);
+		led_toggle(LED0);
+		led_toggle(LED1);
+		cmtw0_start(MICRO_SEC, 50000, &timer_status);
+		while (!timer_status);
+		led_toggle(LED0);
+		led_toggle(LED1);
+		cmtw1_start(MICRO_SEC, 50000, &timer_status);
+		while (!timer_status);
 	}
 
 	return 0;
