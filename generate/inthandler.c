@@ -223,10 +223,10 @@ void INT_Excep_SCI7_RXI7(void){ }
 void INT_Excep_SCI7_TXI7(void){ }
 
 // SCI8 RXI8
-void INT_Excep_SCI8_RXI8(void){ }
+// void INT_Excep_SCI8_RXI8(void){ }
 
 // SCI8 TXI8
-void INT_Excep_SCI8_TXI8(void){ }
+// void INT_Excep_SCI8_TXI8(void){ }
 
 // SCI9 RXI9
 void INT_Excep_SCI9_RXI9(void){ }
@@ -256,7 +256,7 @@ void INT_Excep_RSPI2_SPTI2(void){ }
 void INT_Excep_ICU_GROUPBL0(void){ }
 
 // ICU GROUPBL1
-void INT_Excep_ICU_GROUPBL1(void){ }
+// void INT_Excep_ICU_GROUPBL1(void){ }
 
 // ICU GROUPAL0
 void INT_Excep_ICU_GROUPAL0(void){ }
