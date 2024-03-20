@@ -8,23 +8,30 @@
 /*                                                             */
 /***************************************************************/
 
+#include <intprg.h>
+#include <sci8.h>
 #include "common.h"
 #include "gpio.h"
 #include "cmt.h"
-// #include "uart.h"
-// #include "groupir.h"
+
 
 
 
 int main(void)
 {
 	uint8_t timer_status;
+	uint8_t str[] = "Hello! from RX65N\r\n";
 
 	gpio_create();
 	cmt_create();
 
 	led_ctrl(LED0, LED_ON);
 	led_ctrl(LED1, LED_OFF);
+
+	group_interrupt_create();
+	sci8_create();
+	sci8_start();
+	sci8_send(str, 19);
 
 
 	while(1) {

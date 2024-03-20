@@ -13,7 +13,8 @@
 #include "interrupt_handlers.h"
 
 
-#define R_BSP_NOP()    __asm("nop")
+
+#define R_BSP_NOP()	__asm("nop")
 
 
 // board config.
