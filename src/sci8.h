@@ -23,5 +23,7 @@ extern void sci8_recv(uint8_t *const rx_buf, uint16_t rx_num);
 extern void INT_Excep_SCI8_TEI8(void);
 extern void INT_Excep_SCI8_ERI8(void);
 
+extern volatile uint8_t sci8_send_end;
+
 
 #endif /* SCI8_H_ */

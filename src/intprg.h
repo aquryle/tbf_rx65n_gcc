@@ -10,12 +10,11 @@
 
 #include "common.h"
 
-
+// プロトタイプ宣言
+extern void selective_interrupt_create(void);
 extern void group_interrupt_create(void);
-extern void INT_Excep_ICU_GROUPBL1(void);
 
-
-
+// 外部定義関数読み込み
 extern void INT_Excep_SCI8_TEI8(void);
 extern void INT_Excep_SCI8_ERI8(void);
 

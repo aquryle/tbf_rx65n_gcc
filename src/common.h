@@ -18,6 +18,9 @@
 
 
 // board config.
+#define RX65N_LITTLE_ENDIAN	(0)
+#define RX65N_BIG_ENDIAN		(1)
+#define RX65N_BYTE_ORDER		(LITTLE_ENDIAN)
 #define PIN_SIZE			(100)
 #define CRYSTAL_FREQUENCY	(14745600)
 

@@ -12,7 +12,7 @@ volatile uint8_t *sci8_rx_addr;
 volatile uint16_t sci8_tx_num;
 volatile uint16_t sci8_rx_num;
 volatile uint16_t sci8_rx_len;
-
+volatile uint8_t sci8_send_end;
 
 
 
@@ -94,6 +94,8 @@ void sci8_send(uint8_t *const tx_buf, uint16_t tx_num)
 		PORTC.PMR.BIT.B7 = 1;
 		IEN(SCI8, TXI8) = 1;
 	}
+
+	sci8_send_end = 0;
 }
 
 void sci8_recv(uint8_t *const rx_buf, uint16_t rx_num)
@@ -145,6 +147,8 @@ void INT_Excep_SCI8_TEI8(void)
 	SCI8.SCR.BIT.TIE = 0U;
 	SCI8.SCR.BIT.TE = 0U;
 	SCI8.SCR.BIT.TEIE = 0U;
+
+	sci8_send_end = 1;
 }
 
 void INT_Excep_SCI8_ERI8(void)

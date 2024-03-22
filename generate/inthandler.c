@@ -301,7 +301,7 @@ void INT_Excep_EXDMAC_EXDMAC0I(void){ }
 void INT_Excep_EXDMAC_EXDMAC1I(void){ }
 
 // PERIB INTB128
-void INT_Excep_PERIB_INTB128(void){ }
+// void INT_Excep_PERIB_INTB128(void){ }
 
 // PERIB INTB129
 void INT_Excep_PERIB_INTB129(void){ }

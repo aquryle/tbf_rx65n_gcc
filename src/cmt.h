@@ -16,6 +16,8 @@ extern void cmt_create(void);
 extern void cmt_wait(uint8_t cmt_num, CMT_UNIT unit, uint32_t t);
 extern void cmtw0_start(CMT_UNIT unit, uint16_t time, uint8_t *status);
 extern void cmtw1_start(CMT_UNIT unit, uint16_t time, uint8_t *status);
+void cmt2_start(void);
+void cmt2_stop(void);
 
 
 

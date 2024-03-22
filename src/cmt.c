@@ -24,6 +24,7 @@ void cmt_create(void)
 	SYSTEM.PRCR.WORD = 0xA502;
 	MSTP(CMT0) = 0;
 	MSTP(CMT1) = 0;
+	MSTP(CMT2) = 0;
 	MSTP(CMTW0) = 0;
 	MSTP(CMTW1) = 0;
 	SYSTEM.PRCR.WORD = 0xA500;
@@ -31,21 +32,22 @@ void cmt_create(void)
 	// カウントストップ
 	CMT.CMSTR0.BIT.STR0 = 0;
 	CMT.CMSTR0.BIT.STR1 = 0;
+	CMT.CMSTR1.BIT.STR2 = 0;
 	CMTW0.CMWSTR.BIT.STR = 0;
 	CMTW1.CMWSTR.BIT.STR = 0;
 
 	// コントロールレジスタ
 	CMT0.CMCR.WORD = 0x0080;	// PCLK/8、CMI禁止
 	CMT1.CMCR.WORD = 0x0080;	// PCLK/8、CMI禁止
+	CMT2.CMCR.WORD = 0x0083;	// PCLK/512、CMI禁止
 
+	// コンペアマッチ許可（CMTWのみ）
 	CMTW1.CMWIOR.BIT.CMWE = 1;	// コンペアマッチ動作許可
 	CMTW0.CMWIOR.BIT.CMWE = 1;	// コンペアマッチ動作許可
 
 	// IPR
 	IPR(CMTW1, CMWI1) = _IPR_LEVEL10;
 	IPR(CMTW0, CMWI0) = _IPR_LEVEL10;
-
-
 }
 
 
@@ -198,6 +200,25 @@ void cmtw1_stop(void)
 }
 
 
+void cmt2_start(void)
+{
+	cmt2_stop();
+	CMT2.CMCR.BIT.CMIE = 1;		// 割り込み許可
+	CMT2.CMCNT = 0;				// カウンタリセット
+	CMT2.CMCOR = 28799;			// コンペアマッチ値設定
+	IEN(PERIB, INTB128) = 1;	// 割り込み許可
+	CMT.CMSTR1.BIT.STR2 = 1;	// タイマー開始
+}
+
+void cmt2_stop(void)
+{
+	CMT.CMSTR1.BIT.STR2 = 0;
+	IEN(PERIB, INTB128) = 0;	// 割り込み禁止
+}
+
+
+
+
 
 // CMTW0 CMWI0
 void INT_Excep_CMTW0_CMWI0(void)
@@ -212,4 +233,8 @@ void INT_Excep_CMTW1_CMWI1(void)
 	*cmtw1_status = 1;
 	cmtw1_stop();
 }
+
+
+
+
 
