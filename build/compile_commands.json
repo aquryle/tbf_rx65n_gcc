@@ -46,6 +46,11 @@
   },
   {
     "directory": "C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc",
+    "command": "rx-elf-gcc -Og -ffunction-sections -fdata-sections -fno-strict-aliasing -fdiagnostics-parseable-fixits -Wunused -Wuninitialized -Wall -Wextra -Wmissing-declarations -Wconversion -Wpointer-arith -Wshadow -Waggregate-return -Wstack-usage\u003d100 -g2 -misa\u003dv2 -mlittle-endian-data -I\"C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc/generate\" -I\"C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc/src\" -Wa,-adlnh\u003d\"$(basename $(notdir $\u003c)).lst\" \"C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc/src/pwm.c\" -c -o \"C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc/HardwareDebug/src/pwm.o\"",
+    "file": "C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc/src/pwm.c"
+  },
+  {
+    "directory": "C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc",
     "command": "rx-elf-gcc -Og -ffunction-sections -fdata-sections -fno-strict-aliasing -fdiagnostics-parseable-fixits -Wunused -Wuninitialized -Wall -Wextra -Wmissing-declarations -Wconversion -Wpointer-arith -Wshadow -Waggregate-return -Wstack-usage\u003d100 -g2 -misa\u003dv2 -mlittle-endian-data -I\"C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc/generate\" -I\"C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc/src\" -Wa,-adlnh\u003d\"$(basename $(notdir $\u003c)).lst\" \"C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc/src/sci8.c\" -c -o \"C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc/HardwareDebug/src/sci8.o\"",
     "file": "C:/Users/sata/develop/e2studio_2024_01/RX65N/tbf_rx65n_gcc/src/sci8.c"
   },

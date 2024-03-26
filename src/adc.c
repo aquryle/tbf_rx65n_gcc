@@ -36,3 +36,15 @@ void adc_start(void)
 {
 
 }
+
+
+
+//! ADCからの取得値を電圧(mV)に変換する
+uint16_t convert_16_voltage(uint16_t value)
+{
+	uint32_t tmp;
+	tmp = VCC_VOLTAGE * value;
+	return (uint16_t)(tmp / 0x0FFFu);
+}
+
+

@@ -21,6 +21,7 @@
 void split_16_8(uint16_t num, uint8_t *ary);
 uint8_t split_16_ascii(uint16_t num, uint8_t *ary);
 
+
 uint8_t str[] = "Hello! from RX65N\r\n";
 uint8_t return_key[] = "\r\n";
 
@@ -29,9 +30,9 @@ uint8_t return_key[] = "\r\n";
 int main(void)
 {
 	// uint8_t timer_status;
-	uint16_t adcValue;
 	uint16_t sendNum;
 	uint8_t adcStr[0x10] = {0};
+	uint16_t voltage;
 
 	// uint16_t num;
 
@@ -51,18 +52,22 @@ int main(void)
 	led_ctrl(LED1, LED_OFF);
 
 	while(1) {
-		adcValue = S12AD.ADDR0;
-		sendNum = split_16_ascii(adcValue, adcStr);
-
+		voltage = convert_16_voltage(S12AD.ADDR0);	// 電圧取得
+		sendNum = split_16_ascii(voltage, adcStr);	//
+		adcStr[sendNum] = ' ';	sendNum++;
+		adcStr[sendNum] = 'm';	sendNum++;
+		adcStr[sendNum] = 'V';	sendNum++;
+		adcStr[sendNum] = '\r';	sendNum++;
+		adcStr[sendNum] = '\n';	sendNum++;
 		sci8_send(adcStr, sendNum);
 		while (0 == sci8_send_end);		// 送信完了待ち
-		sci8_send(return_key, (uint16_t)sizeof(return_key) - 1);
-		while (0 == sci8_send_end);		// 送信完了待ち
+		// sci8_send(return_key, (uint16_t)sizeof(return_key) - 1);
+		// while (0 == sci8_send_end);		// 送信完了待ち
 
 		cmt_wait(0, MILLI_SEC, 1000);
 
 		led_toggle(LED0);
-		led_toggle(LED1);
+		// led_toggle(LED1);
 
 		// cmtw0_start(MILLI_SEC, 500, &timer_status);
 		// while (!timer_status);
@@ -133,3 +138,4 @@ uint8_t split_16_ascii(uint16_t num, uint8_t *ary)
 
 	return digit;
 }
+

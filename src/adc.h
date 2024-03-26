@@ -12,6 +12,7 @@
 
 extern void adc_create(void);
 extern void adc_start(void);
+extern uint16_t convert_16_voltage(uint16_t value);
 
 
 #endif /* ADC_H_ */
